@@ -2,6 +2,13 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// DialogueTest: O comandante.
+/*
+    Esse script é responsável por MANDAR no motor da textbox.
+    Ele diz quando começar, qual fala exibir, quando avançar, quando pular a animação...
+*/
+
+
 public class DialogueTest : MonoBehaviour
 {
     [SerializeField] private DialogueBox dialogueBox;
@@ -33,7 +40,7 @@ public class DialogueTest : MonoBehaviour
     {
         if (dialogueBox.isTyping)
         {
-            dialogueBox.ForceCompleteText(lines[currentLine].text);
+            dialogueBox.ForceCompleteText(lines[currentLine]);
         }
         else
         {
@@ -49,7 +56,7 @@ public class DialogueTest : MonoBehaviour
         currentLine = 0;
 
         dialogueBox.Show();
-        dialogueBox.ShowText(lines[currentLine].text);
+        dialogueBox.ShowText(lines[currentLine]);
     }
 
     private void AdvanceDialogue()
@@ -58,7 +65,7 @@ public class DialogueTest : MonoBehaviour
 
         if (currentLine < lines.Length)
         {
-            dialogueBox.ShowText(lines[currentLine].text);
+            dialogueBox.ShowText(lines[currentLine]);
         }
         else
         {

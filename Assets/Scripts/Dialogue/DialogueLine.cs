@@ -2,6 +2,6 @@ using UnityEngine;
 
 [System.Serializable] public class DialogueLine
 {
-    public string speaker;
+    public GameObject speaker;
     public string text;
 }

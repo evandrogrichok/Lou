@@ -2,27 +2,29 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
+// DialogueBox: A view.
+/*
+    Esse script é responsável por MOSTRAR as falas. Como se fosse o motor das Textboxes.
+
+    Seu papel é simples: Exibir e ocultar caixa e texto, e aplicar efeitos de digitação,
+    controlar a velocidade de digitação e controlar os parâmetro booleanos.
+
+    O texto, atualmente, é provido pelo script DialogueTest.
+*/
+
 public class DialogueBox : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI dialogText;
+    [SerializeField] private TextMeshProUGUI dialogText; //a referencia para o componente do gmobj
     [SerializeField] private float typingSpeed = 0.05f;
     public bool isTyping { get; private set; }
-    private Coroutine typingCoroutine;
+    private Coroutine typingCoroutine; // referencia para a corrotina.
 
-
-    
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    public void ShowText(string text)
+    public void ShowText(DialogueLine line)
     {
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         
-        typingCoroutine = StartCoroutine(TypeSentence(text));
+        typingCoroutine = StartCoroutine(TypeSentence(line.text));
+        // a corrotina é 100% responsável pela digitação do texto
     }
 
     private IEnumerator TypeSentence(string sentence)
@@ -39,14 +41,14 @@ public class DialogueBox : MonoBehaviour
         
     }
 
-    public void ForceCompleteText(string fullText)
+    public void ForceCompleteText(DialogueLine line)
     {
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
         }
 
-        dialogText.text = fullText;
+        dialogText.text = line.text;
         isTyping = false;
 
     }
@@ -61,9 +63,4 @@ public class DialogueBox : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
