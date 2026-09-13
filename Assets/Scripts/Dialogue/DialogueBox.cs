@@ -32,7 +32,7 @@ public class DialogueBox : MonoBehaviour
     {
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         
-        Vector3 screenPosition = Camera.main.WorldToScreenPoint(line.speaker.transform.position); //pegando posicao
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(line.speaker.GetComponentInChildren<DialoguePoint>().transform.position); //pegando posicao
         //aqui, ele pega a camera principal, chama a funcao world to screen point. dentro, temos ele pega a posicao do speaker.
         //ela devolve a posição correspondente do speaker em screenspace.
 
