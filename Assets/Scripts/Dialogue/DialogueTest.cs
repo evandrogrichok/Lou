@@ -38,9 +38,9 @@ public class DialogueTest : MonoBehaviour
 
     private void ResolveIsTyping()
     {
-        if (dialogueBox.isTyping)
+        if (dialogueBox.IsTyping())
         {
-            dialogueBox.ForceCompleteText(lines[currentLine]);
+            dialogueBox.ForceCompleteText(lines[currentLine].text);
         }
         else
         {

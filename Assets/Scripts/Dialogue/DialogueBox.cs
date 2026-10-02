@@ -1,6 +1,8 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using UnityEngine.UI;
 
 // DialogueBox: A view.
 /*
@@ -13,31 +15,39 @@ using UnityEngine;
 */
 
 public class DialogueBox : MonoBehaviour
-{
-    [SerializeField] private TextMeshProUGUI dialogText; //a referencia para o componente do gmobj
-    [SerializeField] private float typingSpeed = 0.05f;
-    [SerializeField] private Canvas canvas;
-    
-    public bool isTyping { get; private set; }
-    private Coroutine typingCoroutine; // referencia para a corrotina.
+{   
 
+    [SerializeField] private DialogueTextAnimator textAnimator;
+    [SerializeField] private Canvas canvas;
     private RectTransform rectTransform;
+    private RectTransform canvasRect;
+
+    private GameObject speaker;
 
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
+        canvasRect = canvas.GetComponent<RectTransform>();
+        //agora, aqui, pegamos o recttransform do CANVAS. (a UI).
     }
+
 
     public void ShowText(DialogueLine line)
     {
-        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-        
-        Vector3 screenPosition = Camera.main.WorldToScreenPoint(line.speaker.GetComponentInChildren<DialoguePoint>().transform.position); //pegando posicao
+        textAnimator.HideAllCharacters();
+        textAnimator.StartTyping(line.text);
+
+        SetBubbleSize();
+
+        speaker = line.speaker;
+    }
+
+
+    private void UpdatePosition(GameObject target)
+    {
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(target.GetComponentInChildren<DialoguePoint>().transform.position); //pegando posicao
         //aqui, ele pega a camera principal, chama a funcao world to screen point. dentro, temos ele pega a posicao do speaker.
         //ela devolve a posição correspondente do speaker em screenspace.
-
-        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
-        //agora, aqui, pegamos o recttransform do CANVAS. (a UI).
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPosition, canvas.worldCamera, out Vector2 localPosition);
         // Traduz a posição da tela (Screen Space) para uma posição
@@ -46,36 +56,9 @@ public class DialogueBox : MonoBehaviour
 
         rectTransform.anchoredPosition = localPosition;
         //depois, a local position é atribuida à posição do RectTransform em relação à âncora.
-
-        typingCoroutine = StartCoroutine(TypeSentence(line.text));
-        // a corrotina é 100% responsável pela digitação do texto
     }
 
-    private IEnumerator TypeSentence(string sentence)
-    {
-        isTyping = true;
-        dialogText.text = "";
-        
-        foreach(char letter in sentence.ToCharArray())
-        {
-            dialogText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
-        }
-        isTyping = false;
-        
-    }
 
-    public void ForceCompleteText(DialogueLine line)
-    {
-        if (typingCoroutine != null)
-        {
-            StopCoroutine(typingCoroutine);
-        }
-
-        dialogText.text = line.text;
-        isTyping = false;
-
-    }
 
     public void Show()
     {
@@ -87,4 +70,32 @@ public class DialogueBox : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void Update()
+    {
+        if (gameObject.activeSelf == true && speaker != null) UpdatePosition(speaker);
+    }
+
+    private void SetBubbleSize()
+    {
+        Vector2 prefValues = textAnimator.GetTextSize();
+        Vector2 padding = new Vector2(20f, 20f);
+
+        rectTransform.sizeDelta = prefValues + padding;
+
+    }
+
+    public bool IsTyping()
+    {
+        return textAnimator.isTyping;
+    }
+
+    public void ForceCompleteText(string text)
+    {
+        textAnimator.ForceCompleteText(text);
+    }
+
 }
+
+
+
+
