@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Data.Common;
 using TMPro;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ public class DialogueTextAnimator : MonoBehaviour
 
     private Coroutine typingCoroutine;
 
+
     
 
     public void StartTyping(string text)
@@ -20,6 +22,8 @@ public class DialogueTextAnimator : MonoBehaviour
 
         dialogText.text = text;
         dialogText.ForceMeshUpdate();
+        
+        HideAllCharacters();
         typingCoroutine = StartCoroutine(TypeSentence()); 
     }
 
@@ -147,5 +151,7 @@ public class DialogueTextAnimator : MonoBehaviour
 
         dialogText.UpdateVertexData(TMP_VertexDataUpdateFlags.Vertices);
     }
+
+    
 }
 

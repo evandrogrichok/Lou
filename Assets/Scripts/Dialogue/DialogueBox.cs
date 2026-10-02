@@ -19,6 +19,7 @@ public class DialogueBox : MonoBehaviour
 
     [SerializeField] private DialogueTextAnimator textAnimator;
     [SerializeField] private Canvas canvas;
+    [SerializeField] private RectTransform bubbleImage;
     private RectTransform rectTransform;
     private RectTransform canvasRect;
 
@@ -34,7 +35,6 @@ public class DialogueBox : MonoBehaviour
 
     public void ShowText(DialogueLine line)
     {
-        textAnimator.HideAllCharacters();
         textAnimator.StartTyping(line.text);
 
         SetBubbleSize();
@@ -75,13 +75,12 @@ public class DialogueBox : MonoBehaviour
         if (gameObject.activeSelf == true && speaker != null) UpdatePosition(speaker);
     }
 
-    private void SetBubbleSize()
+    public void SetBubbleSize()
     {
         Vector2 prefValues = textAnimator.GetTextSize();
         Vector2 padding = new Vector2(20f, 20f);
 
-        rectTransform.sizeDelta = prefValues + padding;
-
+        bubbleImage.sizeDelta = prefValues + padding;
     }
 
     public bool IsTyping()
